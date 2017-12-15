@@ -347,17 +347,6 @@ public class StandardOidcIdentityProvider implements OidcIdentityProvider {
 
                 final String email = claimsSet.getStringClaim(EMAIL_CLAIM_NAME);
 
-                // Workaround : Azure AD response returns email address as "upn" instead of "email"
-                // If email is not in response, check for upn
-                final String ad_upn = claimsSet.getStringClaim("upn");
-                // ensure we were able to get the user email
-                if (StringUtils.isBlank(email) && StringUtils.isBlank(ad_upn)) {
-                    throw new IllegalStateException("Unable to extract email from the UserInfo token.");
-                } else if (!StringUtils.isBlank(email)){
-                    return email;
-                } else{
-                    return ad_upn;
-                }
             } else {
                 final UserInfoErrorResponse errorResponse = (UserInfoErrorResponse) response;
                 throw new RuntimeException("An error occurred while invoking the UserInfo endpoint: " + errorResponse.getErrorObject().getDescription());
